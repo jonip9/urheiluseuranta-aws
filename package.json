@@ -22,6 +22,7 @@
     "@aws-cdk/aws-dynamodb": "1.91.0",
     "@aws-cdk/core": "1.91.0",
     "@serverless-stack/cli": "0.9.18",
-    "@serverless-stack/resources": "0.9.18"
+    "@serverless-stack/resources": "0.9.18",
+    "aws-sdk": "^2.879.0"
   }
 }
