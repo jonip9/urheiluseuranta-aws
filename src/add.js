@@ -1,22 +1,32 @@
 import { DynamoDB } from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
-export async function handler(event, context) {
-  console.log('event: ', event);
-  console.log('context :', context);
-  const data = JSON.parse(event.body);
+export async function handler(event) {
+  const { sport, date, duration, distance, comment } = JSON.parse(event.body);
+  const userId = event.requestContext.authorizer.jwt.claims.sub;
+
+  const itemForDb = {
+    eventId: uuidv4(),
+    userId,
+    sport,
+    date,
+    duration,
+    distance,
+    comment,
+  };
 
   await dynamoDb
     .put({
       TableName: process.env.tableName,
-      Item: {},
+      Item: itemForDb,
     })
     .promise();
 
   return {
     statusCode: 200,
-    body: 'Hello World!',
-    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(itemForDb),
+    headers: { 'Content-Type': 'application/json' },
   };
 }

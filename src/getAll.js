@@ -1,8 +1,24 @@
+import { DynamoDB } from 'aws-sdk';
 
-export async function handler(event, context) {
+const dynamoDb = new DynamoDB.DocumentClient();
+
+export async function handler(event) {
+  const userId = event.requestContext.authorizer.jwt.claims.sub;
+
+  const results = await dynamoDb
+    .query({
+      TableName: process.env.tableName,
+      IndexName: 'userId',
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId,
+      },
+    })
+    .promise();
+
   return {
     statusCode: 200,
-    body: 'Hello World!',
-    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(results.Items),
+    headers: { 'Content-Type': 'application/json' },
   };
 }
