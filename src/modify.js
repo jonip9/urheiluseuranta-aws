@@ -3,7 +3,7 @@ import { DynamoDB } from 'aws-sdk';
 const dynamoDb = new DynamoDB.DocumentClient();
 
 export async function handler(event) {
-  // const { sport, date, duration, distance, comment } = JSON.parse(event.body);
+  const { date, sport, duration, distance, comment } = JSON.parse(event.body);
   const eventId = event.pathParameters.id;
 
   const result = await dynamoDb
@@ -12,9 +12,19 @@ export async function handler(event) {
       Key: {
         eventId,
       },
-      UpdateExpression: '',
+      UpdateExpression:
+        'SET #date = :date, sport = :sport, #duration = :duration, distance = :distance, #comment = :comment',
+      ExpressionAttributeNames: {
+        '#date': 'date',
+        '#duration': 'duration',
+        '#comment': 'comment',
+      },
       ExpressionAttributeValues: {
-        '': '',
+        ':date': date,
+        ':sport': sport,
+        ':duration': duration,
+        ':distance': distance,
+        ':comment': comment,
       },
       ReturnValues: 'ALL_NEW',
     })

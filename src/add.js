@@ -4,14 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 const dynamoDb = new DynamoDB.DocumentClient();
 
 export async function handler(event) {
-  const { sport, date, duration, distance, comment } = JSON.parse(event.body);
+  const { date, sport, duration, distance, comment } = JSON.parse(event.body);
   const userId = event.requestContext.authorizer.jwt.claims.sub;
 
   const itemForDb = {
     eventId: uuidv4(),
     userId,
-    sport,
     date,
+    sport,
     duration,
     distance,
     comment,
